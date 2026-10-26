@@ -338,10 +338,9 @@ button { cursor: pointer; }
 .status::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
 /* .status--moi { background: var(--blue-bg); color: var(--primary-ink); }
 .status--cap-tinh { background: var(--amber-bg); color: var(--amber); } */
-.status--phuong-xa { background: var(--green-bg); color: var(--green); }
-.status--cap-tinh { background: var(--green-bg); color: var(--green); }
-.status--cap-bo { background: var(--blue-bg); color: var(--primary-ink); }
-.status--co-quan-khac { background: var(--amber-bg); color: var(--amber); }
+.status--toan-trinh { background: var(--green-bg); color: var(--green); }
+.status--mot-phan { background: var(--amber-bg); color: var(--amber); }
+.status--khong-truc-tuyen { background: var(--blue-bg); color: var(--primary-ink); }
 /* .status--qua-han { background: var(--red-bg); color: var(--red); } */
 
 /* ==========================================================================
