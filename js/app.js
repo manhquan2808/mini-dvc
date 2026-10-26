@@ -7,13 +7,11 @@
  * ------------------------------------------------------------------
  */
 
+// Mức độ cung cấp dịch vụ công trực tuyến theo Phụ lục QĐ 2117/QĐ-BTP.
 const STATUS_LABEL = {
-  // "moi": "Mới",
-  // "dang-xu-ly": "Đang xử lý",
-  "cap-bo": "Cấp Bộ",
-  "cap-tinh": "Cấp Tỉnh",
-  "phuong-xa": "Cấp Phường/Xã",
-  "co-quan-khac": "Cơ quan khác",
+  "toan-trinh": "Toàn trình",
+  "mot-phan": "Một phần",
+  "khong-truc-tuyen": "Không trực tuyến",
 };
 
 const PRIORITY_LABEL = {
@@ -73,7 +71,8 @@ function populateFilterOptions() {
     categories.map((c) => `<option value="${escapeAttr(c)}">${escapeHtml(c)}</option>`).join("");
 
   const statusSelect = document.getElementById("filterStatus");
-  statusSelect.innerHTML = `<option value="all">Tất cả cấp thực hiện</option>` +
+  const statusLabel = state.tab === "dvc" ? "Tất cả mức độ trực tuyến" : "Tất cả trạng thái";
+  statusSelect.innerHTML = `<option value="all">${statusLabel}</option>` +
     Object.entries(STATUS_LABEL).map(([key, label]) => `<option value="${key}">${label}</option>`).join("");
 
   state.category = "all";
@@ -98,7 +97,7 @@ function getFilteredItems() {
 
     let haystack;
     if (state.tab === "dvc") {
-      haystack = [item.maTTHC, item.ten, item.linhVuc, item.doiTuong, item.coQuanThucHien];
+      haystack = [item.maTTHC, item.ten, item.linhVuc, item.ghiChu];
       item.coQuanThucHienList.forEach((c) => haystack.push(c.tinh, c.maCoQuan, c.maDVC));
     } else {
       haystack = [item.ma, item.ten, item.phongBan, item.nguoiPhuTrach];
@@ -225,12 +224,10 @@ function openDrawerDVC(item) {
 
   const fields = [
     ["Lĩnh vực", item.linhVuc],
-    ["Đối tượng thực hiện", item.doiTuong],
-    ["Cấp thực hiện", item.capQD],
-    ["Cơ quan thực hiện", item.coQuanThucHien],
     ["Dịch vụ công trực tuyến", MUC_DO_LABEL[item.mucDoDVC]],
-    ["Thời gian triển khai thí điểm", item.thoiGianThiDiem],
   ];
+  // Nhóm II — lý do chỉ cung cấp một phần, theo đúng 4 cột con của Phụ lục.
+  (item.lyDoMotPhan || []).forEach(({ nhan, noiDung }) => fields.push([nhan, noiDung]));
   if (item.ghiChu) fields.push(["Ghi chú", item.ghiChu]);
   document.getElementById("drawerMeta").innerHTML = fields
     .map(([label, value]) => `<div><dt>${escapeHtml(label)}</dt><dd>${escapeHtml(String(value ?? "—"))}</dd></div>`)
