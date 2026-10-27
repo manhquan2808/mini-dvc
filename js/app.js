@@ -193,7 +193,7 @@ function buildPortalUrl(procedure, agency) {
     MaDVC: agency.maDVC,
     MaCoQuanThucHien: agency.maCoQuan,
     keyword: "",
-    CapThucHien: String(procedure.capThucHien ?? ""),
+    // CapThucHien: String(procedure.capThucHien ?? ""),
   });
   return `${procedure.portalBaseUrl}?${params.toString()}`;
 }
