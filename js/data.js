@@ -485,184 +485,97 @@ const DICH_VU_CONG = (() => {
 })();
 
 // --------------------------------------------------------------------------
-// TÁC NGHIỆP NỘI BỘ (dữ liệu mẫu — không thuộc Phụ lục)
+// TÁC NGHIỆP NỘI BỘ — ĐƯỜNG DẪN CÁC HỆ THỐNG TÁC NGHIỆP CỦA CÁN BỘ
+// ==========================================================================
+// Danh mục cổng/phân hệ dùng chung và phần mềm một cửa của các Bộ, tỉnh mà
+// cán bộ, công chức, viên chức truy cập để tác nghiệp.
+//
+// Mỗi dòng: [ mã, tên hệ thống, mô tả, đối tượng sử dụng, đơn vị cung cấp,
+//             địa chỉ truy cập (null = chưa có), nhóm ]
 // --------------------------------------------------------------------------
 
-const TAC_NGHIEP = [
-  {
-    id: "tn-001",
-    ma: "TN-101",
-    ten: "Tiếp nhận hồ sơ tại bộ phận một cửa",
-    phongBan: "Bộ phận Một cửa",
-    nguoiPhuTrach: "Nguyễn Thị Hạnh",
-    han: "Hôm nay, 16:00",
-    uuTien: "cao",
-    trangThai: "dang-xu-ly",
-    capNhat: "4 phút trước",
-  },
-  {
-    id: "tn-002",
-    ma: "TN-102",
-    ten: "Thẩm định hồ sơ cấp phép xây dựng",
-    phongBan: "Phòng Quản lý đô thị",
-    nguoiPhuTrach: "Trần Văn Minh",
-    han: "Hôm nay, 17:00",
-    uuTien: "cao",
-    trangThai: "qua-han",
-    capNhat: "1 giờ trước",
-  },
-  {
-    id: "tn-003",
-    ma: "TN-103",
-    ten: "Trình ký lãnh đạo - lô hồ sơ hộ tịch",
-    phongBan: "Văn phòng UBND",
-    nguoiPhuTrach: "Lê Thị Mai",
-    han: "Ngày mai, 09:00",
-    uuTien: "trung-binh",
-    trangThai: "moi",
-    capNhat: "15 phút trước",
-  },
-  {
-    id: "tn-004",
-    ma: "TN-104",
-    ten: "Trả kết quả cho công dân",
-    phongBan: "Bộ phận Một cửa",
-    nguoiPhuTrach: "Phạm Đức Anh",
-    han: "Hôm nay, 15:30",
-    uuTien: "cao",
-    trangThai: "phuong-xa",
-    capNhat: "22 phút trước",
-  },
-  {
-    id: "tn-005",
-    ma: "TN-105",
-    ten: "Lưu trữ và số hoá hồ sơ đã giải quyết",
-    phongBan: "Văn phòng UBND",
-    nguoiPhuTrach: "Đỗ Thanh Hà",
-    han: "Thứ Sáu, 17:00",
-    uuTien: "thap",
-    trangThai: "dang-xu-ly",
-    capNhat: "2 giờ trước",
-  },
-  {
-    id: "tn-006",
-    ma: "TN-106",
-    ten: "Báo cáo tiến độ giải quyết hồ sơ tuần",
-    phongBan: "Văn phòng UBND",
-    nguoiPhuTrach: "Vũ Quốc Huy",
-    han: "Thứ Sáu, 11:00",
-    uuTien: "trung-binh",
-    trangThai: "moi",
-    capNhat: "40 phút trước",
-  },
-  {
-    id: "tn-007",
-    ma: "TN-107",
-    ten: "Họp giao ban tuần - khối dịch vụ công",
-    phongBan: "Văn phòng UBND",
-    nguoiPhuTrach: "Lãnh đạo Văn phòng",
-    han: "Thứ Hai, 08:00",
-    uuTien: "trung-binh",
-    trangThai: "moi",
-    capNhat: "3 giờ trước",
-  },
-  {
-    id: "tn-008",
-    ma: "TN-108",
-    ten: "Kiểm tra chéo hồ sơ lĩnh vực đất đai",
-    phongBan: "Phòng Tài nguyên - Môi trường",
-    nguoiPhuTrach: "Ngô Thị Lan",
-    han: "Hôm nay, 16:30",
-    uuTien: "cao",
-    trangThai: "dang-xu-ly",
-    capNhat: "10 phút trước",
-  },
-  {
-    id: "tn-009",
-    ma: "TN-109",
-    ten: "Tập huấn nghiệp vụ một cửa điện tử",
-    phongBan: "Phòng CNTT",
-    nguoiPhuTrach: "Hoàng Văn Tùng",
-    han: "Thứ Tư tuần sau",
-    uuTien: "thap",
-    trangThai: "moi",
-    capNhat: "5 giờ trước",
-  },
-  {
-    id: "tn-010",
-    ma: "TN-110",
-    ten: "Bảo trì hệ thống một cửa điện tử",
-    phongBan: "Phòng CNTT",
-    nguoiPhuTrach: "Hoàng Văn Tùng",
-    han: "Tối nay, 22:00",
-    uuTien: "trung-binh",
-    trangThai: "dang-xu-ly",
-    capNhat: "1 phút trước",
-  },
-  {
-    id: "tn-011",
-    ma: "TN-111",
-    ten: "Cập nhật dữ liệu thủ tục mới ban hành",
-    phongBan: "Phòng CNTT",
-    nguoiPhuTrach: "Bùi Thu Trang",
-    han: "Ngày mai, 12:00",
-    uuTien: "trung-binh",
-    trangThai: "dang-xu-ly",
-    capNhat: "25 phút trước",
-  },
-  {
-    id: "tn-012",
-    ma: "TN-112",
-    ten: "Rà soát quy trình xử lý hồ sơ trễ hạn",
-    phongBan: "Văn phòng UBND",
-    nguoiPhuTrach: "Vũ Quốc Huy",
-    han: "Thứ Năm, 17:00",
-    uuTien: "cao",
-    trangThai: "qua-han",
-    capNhat: "6 giờ trước",
-  },
-  {
-    id: "tn-013",
-    ma: "TN-113",
-    ten: "Photocopy, sao y hồ sơ cho công dân",
-    phongBan: "Bộ phận Một cửa",
-    nguoiPhuTrach: "Phạm Đức Anh",
-    han: "Hôm nay, 14:00",
-    uuTien: "thap",
-    trangThai: "phuong-xa",
-    capNhat: "50 phút trước",
-  },
-  {
-    id: "tn-014",
-    ma: "TN-114",
-    ten: "Tổng hợp khảo sát mức độ hài lòng",
-    phongBan: "Văn phòng UBND",
-    nguoiPhuTrach: "Đỗ Thanh Hà",
-    han: "Thứ Sáu, 16:00",
-    uuTien: "thap",
-    trangThai: "moi",
-    capNhat: "4 giờ trước",
-  },
-  {
-    id: "tn-015",
-    ma: "TN-115",
-    ten: "Kiểm tra thiết bị ký số, máy lấy số",
-    phongBan: "Phòng CNTT",
-    nguoiPhuTrach: "Bùi Thu Trang",
-    han: "Hôm nay, 08:30",
-    uuTien: "trung-binh",
-    trangThai: "phuong-xa",
-    capNhat: "3 giờ trước",
-  },
-  {
-    id: "tn-016",
-    ma: "TN-116",
-    ten: "Đối soát phí, lệ phí thu trong ngày",
-    phongBan: "Bộ phận Một cửa",
-    nguoiPhuTrach: "Nguyễn Thị Hạnh",
-    han: "Hôm nay, 17:00",
-    uuTien: "cao",
-    trangThai: "dang-xu-ly",
-    capNhat: "8 phút trước",
-  },
-];
+/** Nhóm hệ thống — dùng cho bộ lọc danh mục của tab Tác nghiệp. */
+const NHOM_HT = {
+  CHUNG: "Cổng & phân hệ dùng chung",
+  BO: "Phần mềm một cửa cấp Bộ",
+  TINH: "Phần mềm một cửa cấp tỉnh",
+};
+
+/** Trạng thái triển khai của hệ thống. */
+const TRANG_THAI_HT = {
+  HOAT_DONG: "dang-hoat-dong",
+  CHUA_CO: "chua-co-dia-chi",
+};
+
+/** Nhãn hiển thị trạng thái hệ thống. */
+const TRANG_THAI_HT_LABEL = {
+  "dang-hoat-dong": "Đang hoạt động",
+  "chua-co-dia-chi": "Chưa có địa chỉ",
+};
+
+/** Mô tả chuẩn của phần mềm một cửa cấp Bộ. */
+const moTaMotCua = (coQuan) =>
+  `Tiếp nhận, giải quyết, trả kết quả, theo dõi, thống kê, báo cáo các TTHC thuộc lĩnh vực quản lý của ${coQuan}`;
+
+const DANH_MUC_HE_THONG = [
+  // ---- Cổng & phân hệ dùng chung -----------------------------------------
+  ["HT-01", "Cổng Dịch vụ công quốc gia",
+    "Tra cứu TTHC, nộp DVC trực tuyến, tra cứu tình trạng giải quyết hồ sơ, thanh toán trực tuyến, gửi Phản ánh kiến nghị",
+    "Người dân, Doanh nghiệp", "Mobifone", "https://dichvucong.gov.vn", NHOM_HT.CHUNG],
+  ["HT-02", "Phân hệ Điều phối giải quyết TTHC",
+    "Tra cứu, thống kê, báo cáo tình hình giải quyết TTHC của toàn cơ quan, đơn vị; Tiếp nhận trực tiếp hồ sơ đối với nhóm 82 DVC thiết yếu; Điều hướng tiếp nhận trực tiếp sang Hệ thống TTGQTTHC của Bộ, của tỉnh",
+    "Toàn bộ cán bộ, CCVC", "Mobifone", "https://quantricong.dichvucong.gov.vn", NHOM_HT.CHUNG],
+  ["HT-03", "Phân hệ Phản ánh kiến nghị",
+    "Tiếp nhận, xử lý, công khai các Phản ánh, kiến nghị của tổ chức, cá nhân",
+    "Cán bộ xử lý PAKN", "Mobifone", "https://phananhkiennghi.dichvucong.gov.vn", NHOM_HT.CHUNG],
+  ["HT-04", "Phân hệ Thanh toán trực tuyến",
+    "Tra cứu, theo dõi, đối soát các giao dịch thanh toán trực tuyến phí, lệ phí qua Cổng DVCQG mới của C12",
+    "Kế toán, cán bộ thu phí", "Mobifone", "https://quantrithanhtoan.ndc.gov.vn/", NHOM_HT.CHUNG],
+  ["HT-05", "Cơ sở dữ liệu quốc gia về TTHC",
+    "Công bố, công khai các Quyết định công bố TTHC, công khai áp dụng DVCTT, quản lý thông tin đơn vị cung cấp DVC, quản lý tài khoản thụ hưởng phí, lệ phí",
+    "TTPVHCC tỉnh", "Mobifone", "https://csdltthc.dichvucong.gov.vn/", NHOM_HT.CHUNG],
+
+  // ---- Phần mềm một cửa cấp Bộ -------------------------------------------
+  ["HT-06", "Phần mềm một cửa Bộ Công Thương", moTaMotCua("Bộ Công Thương"),
+    "Cán bộ CCVC được phân công", "VNPT", "https://motcua-tthc.moit.gov.vn/", NHOM_HT.BO],
+  ["HT-07", "Phần mềm một cửa Bộ Dân tộc và Tôn giáo", moTaMotCua("Bộ Dân tộc và Tôn giáo"),
+    "Cán bộ CCVC được phân công", "FPT", "https://gqtthc.bdttg.gov.vn/", NHOM_HT.BO],
+  ["HT-08", "Phần mềm một cửa Bộ Giáo dục và Đào tạo", moTaMotCua("Bộ Giáo dục và Đào tạo"),
+    "Cán bộ CCVC được phân công", "VNPT", "https://motcua.moet.gov.vn/", NHOM_HT.BO],
+  ["HT-09", "Phần mềm một cửa Bộ Khoa học và Công nghệ", moTaMotCua("Bộ Khoa học và Công nghệ"),
+    "Cán bộ CCVC được phân công", "VNPT", "https://motcua.mst.gov.vn/", NHOM_HT.BO],
+  ["HT-10", "Phần mềm một cửa Bộ Ngoại giao", moTaMotCua("Bộ Ngoại giao"),
+    "Cán bộ CCVC được phân công", "Viettel", "https://bpmc.mofa.gov.vn/", NHOM_HT.BO],
+  ["HT-11", "Phần mềm một cửa Bộ Nội vụ", moTaMotCua("Bộ Nội vụ"),
+    "Cán bộ CCVC được phân công", "VNPT", "https://motcua.moha.gov.vn/", NHOM_HT.BO],
+  ["HT-12", "Phần mềm một cửa Bộ Nông nghiệp và Môi trường", moTaMotCua("Bộ Nông nghiệp và Môi trường"),
+    "Cán bộ CCVC được phân công", "VNPT", "https://motcuannmt.mae.gov.vn", NHOM_HT.BO],
+  ["HT-13", "Phần mềm một cửa Bộ Quốc phòng",
+    "Tiếp nhận, giải quyết, trả kết quả, theo dõi, thống kê, báo cáo các TTHC thuộc lĩnh vực ứng phó sự cố tràn dầu",
+    "Cán bộ CCVC được phân công", "Viettel", "https://motcua.mod.gov.vn/", NHOM_HT.BO],
+  ["HT-14", "Phần mềm một cửa Bộ Tài chính", moTaMotCua("Bộ Tài chính"),
+    "Cán bộ CCVC được phân công", "DTT", null, NHOM_HT.BO],
+  ["HT-15", "Phần mềm một cửa Bộ Tư pháp", moTaMotCua("Bộ Tư pháp"),
+    "Cán bộ CCVC được phân công", "FPT", "https://motcua.moj.gov.vn/", NHOM_HT.BO],
+  ["HT-16", "Phần mềm một cửa Bộ Văn hóa, Thể thao và Du lịch", moTaMotCua("Bộ Văn hóa, Thể thao và Du lịch"),
+    "Cán bộ CCVC được phân công", "Mobifone", "https://dvc.bvhttdl.gov.vn", NHOM_HT.BO],
+  ["HT-17", "Phần mềm một cửa Bộ Xây dựng", moTaMotCua("Bộ Xây dựng"),
+    "Cán bộ CCVC được phân công", "VNPT", "https://motcuabxd.moc.gov.vn", NHOM_HT.BO],
+  ["HT-18", "Phần mềm một cửa Bộ Y tế", moTaMotCua("Bộ Y tế"),
+    "Cán bộ CCVC được phân công", "VNPT", "https://motcua.moh.gov.vn/", NHOM_HT.BO],
+ ];
+
+/** Danh sách hệ thống tác nghiệp dựng cho giao diện. */
+const TAC_NGHIEP = DANH_MUC_HE_THONG.map(
+  ([ma, ten, moTa, doiTuong, donViCungCap, url, nhom], i) => ({
+    id: `ht-${String(i + 1).padStart(3, "0")}`,
+    ma,
+    ten,
+    moTa,
+    doiTuong,
+    donViCungCap,
+    url: url || "",
+    nhom,
+    trangThai: url ? TRANG_THAI_HT.HOAT_DONG : TRANG_THAI_HT.CHUA_CO,
+  })
+);
