@@ -3,21 +3,21 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#123A5E" />
   <title>Điều phối DVC &amp; Tác nghiệp nội bộ</title>
-  <link rel="icon" href="assets/Botuphap.png" type="image/svg+xml" />
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
 
   <header class="topbar">
-    <div class="topbar__left">
-      <img class="topbar__logo" src="assets/Botuphap.png" alt="" aria-hidden="true" />
-      <div class="topbar__titles">
-        <h1 class="topbar__title">Điều phối DVC <span class="topbar__title-accent">siêu tốc</span></h1>
-        <p class="topbar__subtitle">Hệ thống truy cập nhanh thủ tục hành chính</p>
+    <div class="brand">
+      <img class="brand__logo" src="assets/icon.svg" alt="" aria-hidden="true" />
+      <div class="brand__text">
+        <h1 class="brand__title">DVC <span class="brand__accent">mini</span></h1>
       </div>
     </div>
 
@@ -37,30 +37,41 @@
     </div>
   </header>
 
-  <main class="main">
-    <nav class="tabs" role="tablist" aria-label="Chọn nhóm dữ liệu">
-      <button class="tabs__btn is-active" id="tabDVC" role="tab" aria-selected="true" type="button">
-        Dịch vụ công
-        <span class="tabs__count" id="countDVC">0</span>
-      </button>
-      <button class="tabs__btn" id="tabTN" role="tab" aria-selected="false" type="button">
-        Tác nghiệp nội bộ
-        <span class="tabs__count" id="countTN">0</span>
-      </button>
-    </nav>
+  <div class="controlbar">
+    <div class="controlbar__inner">
+      <nav class="tabs" role="tablist" aria-label="Chọn nhóm dữ liệu">
+        <button class="tabs__btn is-active" id="tabDVC" role="tab" aria-selected="true" type="button" title="Phím tắt: 1">
+          <span>Dịch vụ công</span>
+          <span class="tabs__count" id="countDVC">0</span>
+        </button>
+        <button class="tabs__btn" id="tabTN" role="tab" aria-selected="false" type="button" title="Phím tắt: 2">
+          <span>Tác nghiệp nội bộ</span>
+          <span class="tabs__count" id="countTN">0</span>
+        </button>
+      </nav>
 
-    <div class="toolbar">
       <div class="search">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-        <input type="search" id="searchInput" placeholder="Tìm theo mã, tên thủ tục, lĩnh vực, người phụ trách…" aria-label="Tìm kiếm" />
+        <input type="search" id="searchInput" autocomplete="off"
+               placeholder="Tìm mã, tên thủ tục, lĩnh vực…" aria-label="Tìm kiếm" />
+        <kbd class="search__kbd">/</kbd>
       </div>
+
       <div class="filters">
-        <select id="filterCategory" class="select" aria-label="Lọc theo lĩnh vực / phòng ban"></select>
-        <select id="filterStatus" class="select" aria-label="Lọc theo mức độ dịch vụ công trực tuyến"></select>
+        <select id="filterCategory" class="select" aria-label="Lọc theo lĩnh vực / nhóm hệ thống"></select>
+        <select id="filterStatus" class="select" aria-label="Lọc theo mức độ trực tuyến / trạng thái"></select>
+        <button class="iconbtn iconbtn--ghost" id="resetBtn" type="button" title="Xoá tìm kiếm và bộ lọc (Esc)" aria-label="Xoá tìm kiếm và bộ lọc">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
       </div>
     </div>
+  </div>
 
-    <p class="resultcount" id="resultCount" aria-live="polite"></p>
+  <main class="main">
+    <div class="metaline">
+      <p class="resultcount" id="resultCount" aria-live="polite"></p>
+      <div class="chips" id="activeChips"></div>
+    </div>
 
     <section class="listwrap">
       <div class="list" id="listContainer"></div>
@@ -73,19 +84,32 @@
     </section>
   </main>
 
+  <footer class="hintbar">
+    <span><kbd>/</kbd> tìm kiếm</span>
+    <span><kbd>↑</kbd><kbd>↓</kbd> chọn dòng</span>
+    <span><kbd>Enter</kbd> mở hệ thống</span>
+    <span><kbd>⇧</kbd><kbd>Enter</kbd> chi tiết</span>
+    <span><kbd>C</kbd> sao chép mã</span>
+    <span><kbd>1</kbd><kbd>2</kbd> đổi tab</span>
+    <span><kbd>Esc</kbd> đóng / xoá lọc</span>
+  </footer>
+
   <aside class="drawer" id="drawer" aria-hidden="true">
-    <div class="drawer__panel" role="dialog" aria-modal="true" aria-labelledby="drawerTitle">
+    <div class="drawer__panel" role="dialog" aria-modal="true" aria-labelledby="drawerTitle" tabindex="-1">
       <div class="drawer__head">
         <span class="badge" id="drawerCode">—</span>
-        <button class="iconbtn" id="drawerClose" type="button" aria-label="Đóng">
+        <button class="iconbtn" id="drawerClose" type="button" aria-label="Đóng (Esc)" title="Đóng (Esc)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
         </button>
       </div>
       <h2 class="drawer__title" id="drawerTitle">—</h2>
+      <div class="drawer__actions" id="drawerActions"></div>
       <dl class="drawer__meta" id="drawerMeta"></dl>
+      <div id="drawerExtra"></div>
     </div>
   </aside>
   <div class="overlay" id="overlay"></div>
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
   <script src="js/data.js"></script>
   <script src="js/app.js"></script>
