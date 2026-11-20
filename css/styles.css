@@ -458,20 +458,9 @@ kbd {
 .status--toan-trinh { background: var(--green-bg); color: var(--green); }
 .status--mot-phan { background: var(--amber-bg); color: var(--amber); }
 .status--khong-truc-tuyen { background: var(--blue-bg); color: var(--primary-ink); }
-.status--moi-ban-hanh { background: var(--violet-bg); color: var(--violet); }
+.status--cho-cong-khai { background: var(--violet-bg); color: var(--violet); }
 .status--dang-hoat-dong { background: var(--green-bg); color: var(--green); }
 .status--chua-co-dia-chi { background: var(--amber-bg); color: var(--amber); }
-
-.agency-section__note {
-  margin: 0;
-  padding: 12px 14px;
-  border: 1px dashed var(--line-strong);
-  border-radius: var(--radius-m);
-  background: var(--surface);
-  color: var(--ink-soft);
-  font-size: 13px;
-  line-height: 1.55;
-}
 
 /* ==========================================================================
    TÁC NGHIỆP NỘI BỘ — danh mục hệ thống dạng thẻ, gom theo nhóm

@@ -12,11 +12,12 @@
  *   III. Không cung cấp DVCTT hoặc không thực hiện
  *        trên Hệ thống tập trung của Bộ Tư pháp ..... 28 TTHC
  *
- * BỔ SUNG — PHỤ LỤC I QUYẾT ĐỊNH 2296/QĐ-BTP ngày 22/10/2026 của Bộ trưởng Bộ
- * Tư pháp: TTHC MỚI BAN HÀNH lĩnh vực Luật sư (chế định luật sư công thí điểm
- * theo Nghị quyết số 24/2026/QH16 và Nghị định số 364/2026/NĐ-CP):
- *   IV.  Mới ban hành — chưa phân loại mức độ DVCTT ... 5 TTHC
- *   => Tổng danh mục đang cấu hình: 260 TTHC.
+ * BỔ SUNG — DỊCH VỤ CÔNG LĨNH VỰC LUẬT SƯ (LUẬT SƯ CÔNG), đơn vị G15 — Bộ Tư
+ * pháp, công bố tại Phụ lục I Quyết định số 2296/QĐ-BTP ngày 22/10/2026 của Bộ
+ * trưởng Bộ Tư pháp (chế định luật sư công thí điểm theo Nghị quyết số
+ * 24/2026/QH16 và Nghị định số 364/2026/NĐ-CP):
+ *   IV.  Luật sư công — chờ công khai ................. 5 DVC
+ *   => Tổng danh mục đang cấu hình: 260 thủ tục.
  *
  * ------------------------------------------------------------------
  * CÁCH TỔ CHỨC DỮ LIỆU
@@ -28,11 +29,12 @@
  *   DANH_MUC_TOAN_TRINH       [ maTTHC, tên, lĩnh vực ]
  *   DANH_MUC_MOT_PHAN         [ maTTHC, tên, lĩnh vực, lý do cung cấp một phần ]
  *   DANH_MUC_KHONG_TRUC_TUYEN [ maTTHC, tên, lĩnh vực, ghi chú ]
- *   DANH_MUC_MOI_BAN_HANH     [ maTTHC, tên, lĩnh vực, ghi chú ]
+ *   DANH_MUC_LUAT_SU_CONG     [ maDVC, tên DVC, phân loại, ghi chú ]
  *
- * Nhóm IV để maTTHC rỗng vì Quyết định 2296/QĐ-BTP chưa công bố mã TTHC quốc
- * gia. Khi có mã thật, chỉ cần điền vào ô đầu của dòng tương ứng là link cổng
- * DVC tự dựng lại — xem buildThuTuc().
+ * Nhóm I–III lấy theo Phụ lục QĐ 2117/QĐ-BTP nên chỉ có 4 cột và dùng nơi thực
+ * hiện mặc định. Nhóm IV lấy theo bản đăng ký dịch vụ công trên Hệ thống của
+ * Bộ Tư pháp nên có mã DVC thật, đơn vị thật (G15) và dựng bằng hàm riêng
+ * buildThuTucLuatSuCong().
  *
  * "Lý do cung cấp một phần" là object ứng với 4 cột con của Phụ lục:
  *   hienDien  Quy định tổ chức, cá nhân sử dụng dịch vụ phải hiện diện tại cơ quan nhà nước
@@ -80,9 +82,6 @@ const CAP_THUC_HIEN_URL = 2;
 /** Nơi thực hiện mặc định (Phụ lục không công bố mã cơ quan theo tỉnh). */
 const CO_QUAN_MAC_DINH = [{ tinh: "Thành phố Hồ Chí Minh", maCoQuan: "H29" }];
 
-/** Hiển thị thay cho mã TTHC khi thủ tục chưa được cấp mã TTHC quốc gia. */
-const MA_CHUA_CAP = "Chưa cấp mã";
-
 // --------------------------------------------------------------------------
 // TỪ ĐIỂN DÙNG CHUNG
 // --------------------------------------------------------------------------
@@ -116,7 +115,7 @@ const MUC_DO = {
   TT: "toan-trinh",
   MP: "mot-phan",
   KHONG: "khong-truc-tuyen",
-  MOI: "moi-ban-hanh",
+  CHO_CONG_KHAI: "cho-cong-khai",
 };
 
 /** Nhãn hiển thị cho mức độ dịch vụ công trực tuyến. */
@@ -124,7 +123,7 @@ const MUC_DO_LABEL = {
   "toan-trinh": "Trực tuyến toàn trình",
   "mot-phan": "Trực tuyến một phần",
   "khong-truc-tuyen": "Không cung cấp trực tuyến",
-  "moi-ban-hanh": "Mới ban hành — chưa phân loại mức độ",
+  "cho-cong-khai": "Chờ công khai — chưa phân loại mức độ",
 };
 
 /** Nhãn 4 cột con của nhóm "Một phần" trong Phụ lục. */
@@ -451,62 +450,80 @@ const DANH_MUC_KHONG_TRUC_TUYEN = [
 ];
 
 // --------------------------------------------------------------------------
-// IV. TTHC MỚI BAN HÀNH — LĨNH VỰC LUẬT SƯ (LUẬT SƯ CÔNG) (5 TTHC)
-//     Phụ lục I kèm theo Quyết định số 2296/QĐ-BTP ngày 22/10/2026 của Bộ
-//     trưởng Bộ Tư pháp. Cả 5 thủ tục đều do BỘ TƯ PHÁP thực hiện, đối tượng
-//     thực hiện là TỔ CHỨC (cơ quan thực hiện thí điểm), không thu phí, lệ phí.
-//     Cột: maTTHC | tên TTHC | lĩnh vực | ghi chú
+// IV. DỊCH VỤ CÔNG LĨNH VỰC LUẬT SƯ (LUẬT SƯ CÔNG) — 5 DVC
+//     Nguồn 1 — nội dung từng thủ tục: Phụ lục I kèm theo Quyết định số
+//               2296/QĐ-BTP ngày 22/10/2026 của Bộ trưởng Bộ Tư pháp.
+//     Nguồn 2 — mã và thuộc tính kỹ thuật: bản đăng ký dịch vụ công trên Hệ
+//               thống của Bộ Tư pháp (mã DVC, đơn vị G15, phân loại, cấp thực
+//               hiện, trạng thái công khai).
 //
-//     LƯU Ý: Quyết định 2296/QĐ-BTP công bố TTHC mới ban hành, KHÔNG công bố
-//     mã TTHC quốc gia và KHÔNG phân loại mức độ dịch vụ công trực tuyến
-//     (việc phân loại nằm ở Phụ lục Quyết định 2117/QĐ-BTP, chưa cập nhật 5
-//     thủ tục này). Vì vậy nhóm IV mang mức độ "moi-ban-hanh" thay vì gán
-//     toàn trình/một phần theo suy đoán.
+//     5 DVC giống nhau ở: đơn vị G15 — Bộ Tư pháp, lĩnh vực Luật sư, cơ quan
+//     thực hiện Bộ Tư pháp, cấp thực hiện Bộ/Ngành, DVC thực hiện trên hệ
+//     thống bộ ngành, nộp nhiều lần: Có, trạng thái: CHỜ CÔNG KHAI; đối tượng
+//     thực hiện là tổ chức (cơ quan thực hiện thí điểm), không thu phí, lệ phí.
+//
+//     MỨC ĐỘ DVCTT: Quyết định 2296/QĐ-BTP công bố TTHC mới ban hành, KHÔNG
+//     phân loại toàn trình / một phần (việc phân loại thuộc Phụ lục Quyết định
+//     2117/QĐ-BTP, chưa cập nhật 5 thủ tục này). Vì vậy nhóm IV mang trạng
+//     thái "cho-cong-khai" thay vì gán mức độ theo suy đoán.
+//
+//     Cột: maDVC | tên dịch vụ công | phân loại | ghi chú
 // --------------------------------------------------------------------------
 
+/** Đơn vị quản lý 5 DVC luật sư công trên Hệ thống của Bộ Tư pháp. */
+const DON_VI_LUAT_SU_CONG = { tinh: "Bộ Tư pháp", maCoQuan: "G15" };
+
+/** Các cột giống nhau ở cả 5 DVC luật sư công trên bản đăng ký. */
+const THUOC_TINH_LUAT_SU_CONG = {
+  coQuanThucHien: "Bộ Tư pháp",
+  capThucHien: "Bộ / Ngành",
+  loaiHeThongXuLy: "DVC thực hiện trên hệ thống bộ ngành",
+  nopNhieuLan: "Có",
+  trangThaiCongKhai: "Chờ công khai",
+};
+
 /** Căn cứ pháp lý chung của 5 TTHC luật sư công. */
-const CAN_CU_LSC =
+const CAN_CU_LUAT_SU_CONG =
   "Nghị quyết số 24/2026/QH16 ngày 24/4/2026 của Quốc hội về việc thí điểm thực hiện chế định luật sư công; Nghị định số 364/2026/NĐ-CP ngày 21/9/2026 của Chính phủ.";
 
-/** Dựng ghi chú cho 1 TTHC luật sư công từ các cột của Phụ lục I. */
-function ghiChuLuatSuCong({ thoiHan, mau, ketQua }) {
+/** Dựng ghi chú cho 1 TTHC luật sư công từ các mục của Phụ lục I. */
+function ghiChuLuatSuCong({ thoiHan, ketQua, mau }) {
   return [
-    "Cơ quan thực hiện: Bộ Tư pháp. Đối tượng thực hiện: tổ chức (cơ quan thực hiện thí điểm). Phí, lệ phí: không.",
-    `Cách thức thực hiện: nộp trực tiếp hoặc qua dịch vụ bưu chính đến Bộ Tư pháp, hoặc trực tuyến trên Cổng Dịch vụ công quốc gia.`,
+    "Đối tượng thực hiện: tổ chức (cơ quan thực hiện thí điểm). Phí, lệ phí: không.",
+    "Cách thức thực hiện: nộp trực tiếp hoặc qua dịch vụ bưu chính đến Bộ Tư pháp, hoặc trực tuyến trên Cổng Dịch vụ công quốc gia.",
     `Thời hạn giải quyết: ${thoiHan}.`,
     `Kết quả: ${ketQua}.`,
     `Mẫu đơn, tờ khai: ${mau}.`,
-    `Căn cứ pháp lý: ${CAN_CU_LSC}`,
-    "Chưa có mã TTHC quốc gia và chưa được phân loại mức độ DVCTT — cập nhật khi được công bố.",
+    `Căn cứ pháp lý: ${CAN_CU_LUAT_SU_CONG}`,
   ].join(" ");
 }
 
-const CCHN = "Chứng chỉ hành nghề luật sư";
+const CCHN_LS = "Chứng chỉ hành nghề luật sư";
 
-const DANH_MUC_MOI_BAN_HANH = [
-  /*   1 */ ["", "Tham dự kỳ kiểm tra kết quả tập sự hành nghề luật sư để cấp Chứng chỉ hành nghề luật sư cho luật sư công", LV.LUAT_SU, ghiChuLuatSuCong({
-    thoiHan: "10 ngày làm việc kể từ ngày công bố kết quả kỳ kiểm tra",
-    ketQua: CCHN,
+const DANH_MUC_LUAT_SU_CONG = [
+  /*   1 */ ["3.000786.01", "Tham dự kỳ kiểm tra kết quả tập sự hành nghề luật sư để cấp Chứng chỉ hành nghề luật sư", "Thiết yếu", ghiChuLuatSuCong({
+    thoiHan: "cấp Chứng chỉ trong 10 ngày làm việc kể từ ngày công bố kết quả kỳ kiểm tra",
+    ketQua: CCHN_LS,
     mau: "Mẫu TP-LSC-03 (văn bản đề nghị) kèm Danh sách người được đề nghị tham dự kỳ kiểm tra; hồ sơ còn có Báo cáo quá trình tập sự Mẫu TP-LSC-02 và Sổ nhật ký tập sự Mẫu TP-LSC-01",
   })],
-  /*   2 */ ["", "Cấp Chứng chỉ hành nghề luật sư cho luật sư công đối với người được miễn tập sự hành nghề luật sư", LV.LUAT_SU, ghiChuLuatSuCong({
-    thoiHan: "10 ngày làm việc kể từ ngày nhận đủ hồ sơ hợp lệ; từ chối phải trả lời bằng văn bản, nêu rõ lý do",
-    ketQua: CCHN,
+  /*   2 */ ["3.000787.01", "Cấp Chứng chỉ hành nghề luật sư cho luật sư công đối với người được miễn tập sự hành nghề luật sư", "Thiết yếu", ghiChuLuatSuCong({
+    thoiHan: "10 ngày làm việc kể từ ngày nhận đủ hồ sơ hợp lệ; từ chối phải thông báo bằng văn bản, nêu rõ lý do",
+    ketQua: CCHN_LS,
     mau: "Mẫu TP-LSC-04 (văn bản đề nghị) kèm Danh sách người được miễn tập sự đề nghị cấp Chứng chỉ hành nghề luật sư",
   })],
-  /*   3 */ ["", "Thu hồi Chứng chỉ hành nghề luật sư của luật sư công", LV.LUAT_SU, ghiChuLuatSuCong({
-    thoiHan: "10 ngày làm việc kể từ ngày nhận được hồ sơ hợp lệ; từ chối phải trả lời bằng văn bản, nêu rõ lý do",
-    ketQua: "Quyết định thu hồi " + CCHN + " của luật sư công",
+  /*   3 */ ["3.000788.01", "Thu hồi Chứng chỉ hành nghề luật sư của luật sư công", "Thiết yếu", ghiChuLuatSuCong({
+    thoiHan: "10 ngày làm việc kể từ ngày nhận được hồ sơ hợp lệ; từ chối phải thông báo bằng văn bản, nêu rõ lý do",
+    ketQua: "Quyết định thu hồi " + CCHN_LS + " của luật sư công",
     mau: "không có mẫu; hồ sơ gồm văn bản đề nghị thu hồi và giấy tờ chứng minh thuộc trường hợp thu hồi",
   })],
-  /*   4 */ ["", "Cấp đổi Chứng chỉ hành nghề luật sư cho luật sư công", LV.LUAT_SU, ghiChuLuatSuCong({
-    thoiHan: "05 ngày làm việc kể từ ngày nhận được hồ sơ hợp lệ; từ chối phải trả lời bằng văn bản, nêu rõ lý do",
-    ketQua: CCHN,
+  /*   4 */ ["3.000789.01", "Cấp đổi Chứng chỉ hành nghề luật sư cho luật sư công", "Thiết yếu", ghiChuLuatSuCong({
+    thoiHan: "05 ngày làm việc kể từ ngày nhận được hồ sơ hợp lệ; từ chối phải thông báo bằng văn bản, nêu rõ lý do",
+    ketQua: CCHN_LS,
     mau: "không có mẫu; hồ sơ là văn bản đề nghị cấp đổi, nêu rõ lý do (Chứng chỉ bị mất, bị hỏng hoặc thông tin trên Chứng chỉ thay đổi)",
   })],
-  /*   5 */ ["", "Cấp lại Chứng chỉ hành nghề luật sư cho luật sư công", LV.LUAT_SU, ghiChuLuatSuCong({
-    thoiHan: "10 ngày làm việc kể từ ngày nhận được hồ sơ hợp lệ; từ chối phải trả lời bằng văn bản, nêu rõ lý do",
-    ketQua: CCHN,
+  /*   5 */ ["3.000790.01", "Thủ tục cấp lại Chứng chỉ hành nghề luật sư cho luật sư công", "Khác", ghiChuLuatSuCong({
+    thoiHan: "10 ngày làm việc kể từ ngày nhận được hồ sơ hợp lệ; từ chối phải thông báo bằng văn bản, nêu rõ lý do",
+    ketQua: CCHN_LS,
     mau: "không có mẫu; hồ sơ gồm văn bản đề nghị của cơ quan thực hiện thí điểm và giấy tờ chứng minh đáp ứng tiêu chuẩn luật sư công, lý do bị thu hồi Chứng chỉ không còn",
   })],
 ];
@@ -532,8 +549,7 @@ function chuanHoaLyDo(lyDo) {
 /** Dựng 1 object thủ tục từ 1 dòng bảng. */
 function buildThuTuc(row, soThuTu, mucDoDVC) {
   const [maGoc, ten, linhVuc, phuLuc] = row;
-  const coMaQuocGia = Boolean(maGoc);
-  const maTTHC = coMaQuocGia ? chuanHoaMaTTHC(maGoc) : MA_CHUA_CAP;
+  const maTTHC = chuanHoaMaTTHC(maGoc);
 
   return {
     id: `dvc-${String(soThuTu).padStart(3, "0")}`,
@@ -542,31 +558,64 @@ function buildThuTuc(row, soThuTu, mucDoDVC) {
     linhVuc,
     mucDoDVC,
     lyDoMotPhan: mucDoDVC === MUC_DO.MP ? chuanHoaLyDo(phuLuc) : [],
-    // Nhóm III và nhóm IV đều dùng cột thứ 4 làm ghi chú dạng chuỗi;
-    // nhóm II dùng cột này làm object lý do nên không lấy làm ghi chú.
-    ghiChu: typeof phuLuc === "string" ? phuLuc : "",
+    ghiChu: mucDoDVC === MUC_DO.KHONG ? phuLuc || "" : "",
     trangThai: mucDoDVC,   // bộ lọc của app.js lọc theo mức độ DVC trực tuyến
     thoiGian: "",          // Phụ lục không có cột thời gian
     capThucHien: CAP_THUC_HIEN_URL,
     portalBaseUrl: PORTAL_BASE_URL,
-    // Chưa có mã TTHC quốc gia thì không dựng link cổng DVC (tham số MaTTHC,
-    // MaDVC sẽ sai) — giao diện tự hiển thị "Chưa có cổng".
-    coQuanThucHienList: coMaQuocGia
-      ? CO_QUAN_MAC_DINH.map((noi) => ({ ...noi, maDVC: maTTHC }))
-      : [],
+    coQuanThucHienList: CO_QUAN_MAC_DINH.map((noi) => ({ ...noi, maDVC: maTTHC })),
   };
 }
 
-/** 260 TTHC, giữ nguyên thứ tự nhóm I → II → III → IV. */
+/**
+ * Dựng 1 object DVC luật sư công từ 1 dòng bảng nhóm IV.
+ * Mã TTHC là phần gốc của mã DVC: "3.000786.01" → "3.000786".
+ */
+function buildThuTucLuatSuCong(row, soThuTu) {
+  const [maDVC, ten, phanLoai, ghiChu] = row;
+  const maTTHC = maDVC.split(".").slice(0, 2).join(".");
+
+  return {
+    id: `dvc-${String(soThuTu).padStart(3, "0")}`,
+    maTTHC,
+    ten,
+    linhVuc: LV.LUAT_SU,
+    mucDoDVC: MUC_DO.CHO_CONG_KHAI,
+    lyDoMotPhan: [],
+    ghiChu,
+    trangThai: MUC_DO.CHO_CONG_KHAI,
+    thoiGian: "",
+    // Bản đăng ký ghi cấp thực hiện là "Bộ / Ngành", không phải mã số 1/2/3 của
+    // tham số CapThucHien — để rỗng thay vì gán một mã cấp sai.
+    capThucHien: "",
+    portalBaseUrl: PORTAL_BASE_URL,
+    coQuanThucHienList: [{ ...DON_VI_LUAT_SU_CONG, maDVC }],
+    thongTinThem: [
+      ["Mã dịch vụ công", maDVC],
+      ["Đơn vị quản lý", `${DON_VI_LUAT_SU_CONG.maCoQuan} — ${DON_VI_LUAT_SU_CONG.tinh}`],
+      ["Phân loại", phanLoai],
+      ["Loại hệ thống xử lý", THUOC_TINH_LUAT_SU_CONG.loaiHeThongXuLy],
+      ["Cơ quan thực hiện", THUOC_TINH_LUAT_SU_CONG.coQuanThucHien],
+      ["Cấp thực hiện", THUOC_TINH_LUAT_SU_CONG.capThucHien],
+      ["Nộp nhiều lần", THUOC_TINH_LUAT_SU_CONG.nopNhieuLan],
+      ["Trạng thái trên Hệ thống", THUOC_TINH_LUAT_SU_CONG.trangThaiCongKhai],
+    ],
+  };
+}
+
+/** 260 thủ tục, giữ nguyên thứ tự nhóm I → II → III → IV. */
 const DICH_VU_CONG = (() => {
-  const nhom = [
+  const nhomPhuLuc = [
     [DANH_MUC_TOAN_TRINH, MUC_DO.TT],
     [DANH_MUC_MOT_PHAN, MUC_DO.MP],
     [DANH_MUC_KHONG_TRUC_TUYEN, MUC_DO.KHONG],
-    [DANH_MUC_MOI_BAN_HANH, MUC_DO.MOI],
   ];
   let stt = 0;
-  return nhom.flatMap(([bang, mucDo]) => bang.map((row) => buildThuTuc(row, ++stt, mucDo)));
+  const phuLuc2117 = nhomPhuLuc.flatMap(([bang, mucDo]) =>
+    bang.map((row) => buildThuTuc(row, ++stt, mucDo))
+  );
+  const luatSuCong = DANH_MUC_LUAT_SU_CONG.map((row) => buildThuTucLuatSuCong(row, ++stt));
+  return phuLuc2117.concat(luatSuCong);
 })();
 
 // --------------------------------------------------------------------------

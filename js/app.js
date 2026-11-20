@@ -12,12 +12,13 @@
  */
 
 // Tab "Dịch vụ công": mức độ DVC trực tuyến theo Phụ lục QĐ 2117/QĐ-BTP;
-// riêng "moi-ban-hanh" là TTHC mới ban hành theo QĐ 2296/QĐ-BTP, chưa phân loại.
+// riêng "cho-cong-khai" là 5 DVC luật sư công mới ban hành theo QĐ 2296/QĐ-BTP,
+// chưa được phân loại mức độ và chưa công khai trên Hệ thống.
 const STATUS_LABEL_DVC = {
   "toan-trinh": "Toàn trình",
   "mot-phan": "Một phần",
   "khong-truc-tuyen": "Không trực tuyến",
-  "moi-ban-hanh": "Mới ban hành",
+  "cho-cong-khai": "Chờ công khai",
 };
 
 // Tab "Tác nghiệp nội bộ": trạng thái triển khai của hệ thống (xem data.js).
@@ -409,24 +410,18 @@ function openDrawerDVC(item) {
   ];
   // Nhóm II — lý do chỉ cung cấp một phần, theo đúng 4 cột con của Phụ lục.
   (item.lyDoMotPhan || []).forEach(({ nhan, noiDung }) => fields.push([nhan, noiDung]));
+  // Thuộc tính lấy từ bản đăng ký dịch vụ công (hiện chỉ nhóm luật sư công có).
+  (item.thongTinThem || []).forEach(([nhan, noiDung]) => fields.push([nhan, noiDung]));
   if (item.ghiChu) fields.push(["Ghi chú", item.ghiChu]);
   $("drawerMeta").innerHTML = metaHtml(fields);
 
-  // Thủ tục chưa có mã TTHC quốc gia thì chưa dựng được link cổng DVC.
   const agencies = item.coQuanThucHienList || [];
-  $("drawerExtra").innerHTML = agencies.length
-    ? `
+  $("drawerExtra").innerHTML = `
     <div class="agency-section">
       <p class="agency-section__label">Dịch vụ công &rsaquo; ${escapeHtml(item.linhVuc)} &rsaquo; Chọn cơ quan thực hiện</p>
       <div class="agency-list">
         ${agencies.map((agency) => renderAgencyRow(item, agency)).join("")}
       </div>
-    </div>
-  `
-    : `
-    <div class="agency-section">
-      <p class="agency-section__label">Dịch vụ công &rsaquo; ${escapeHtml(item.linhVuc)} &rsaquo; Cơ quan thực hiện</p>
-      <p class="agency-section__note">Thủ tục mới ban hành, chưa có mã TTHC quốc gia nên chưa dựng được liên kết tới cổng Dịch vụ công. Hồ sơ nộp trực tiếp hoặc qua dịch vụ bưu chính đến Bộ Tư pháp, hoặc trực tuyến trên Cổng Dịch vụ công quốc gia.</p>
     </div>
   `;
 }
