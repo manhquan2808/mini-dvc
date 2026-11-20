@@ -16,8 +16,8 @@
  * pháp, công bố tại Phụ lục I Quyết định số 2296/QĐ-BTP ngày 22/10/2026 của Bộ
  * trưởng Bộ Tư pháp (chế định luật sư công thí điểm theo Nghị quyết số
  * 24/2026/QH16 và Nghị định số 364/2026/NĐ-CP):
- *   IV.  Luật sư công — chờ công khai ................. 5 DVC
- *   => Tổng danh mục đang cấu hình: 260 thủ tục.
+ *   IV.  Luật sư công — toàn trình .................... 5 DVC
+ *   => Tổng danh mục đang cấu hình: 260 thủ tục (202 toàn trình).
  *
  * ------------------------------------------------------------------
  * CÁCH TỔ CHỨC DỮ LIỆU
@@ -115,7 +115,6 @@ const MUC_DO = {
   TT: "toan-trinh",
   MP: "mot-phan",
   KHONG: "khong-truc-tuyen",
-  CHO_CONG_KHAI: "cho-cong-khai",
 };
 
 /** Nhãn hiển thị cho mức độ dịch vụ công trực tuyến. */
@@ -123,7 +122,6 @@ const MUC_DO_LABEL = {
   "toan-trinh": "Trực tuyến toàn trình",
   "mot-phan": "Trực tuyến một phần",
   "khong-truc-tuyen": "Không cung cấp trực tuyến",
-  "cho-cong-khai": "Chờ công khai — chưa phân loại mức độ",
 };
 
 /** Nhãn 4 cột con của nhóm "Một phần" trong Phụ lục. */
@@ -462,10 +460,12 @@ const DANH_MUC_KHONG_TRUC_TUYEN = [
 //     thống bộ ngành, nộp nhiều lần: Có, trạng thái: CHỜ CÔNG KHAI; đối tượng
 //     thực hiện là tổ chức (cơ quan thực hiện thí điểm), không thu phí, lệ phí.
 //
-//     MỨC ĐỘ DVCTT: Quyết định 2296/QĐ-BTP công bố TTHC mới ban hành, KHÔNG
-//     phân loại toàn trình / một phần (việc phân loại thuộc Phụ lục Quyết định
-//     2117/QĐ-BTP, chưa cập nhật 5 thủ tục này). Vì vậy nhóm IV mang trạng
-//     thái "cho-cong-khai" thay vì gán mức độ theo suy đoán.
+//     MỨC ĐỘ DVCTT: Quyết định 2296/QĐ-BTP công bố TTHC mới ban hành và KHÔNG
+//     phân loại mức độ (việc phân loại thuộc Phụ lục Quyết định 2117/QĐ-BTP,
+//     chưa cập nhật 5 thủ tục này). 5 DVC dưới đây được cấu hình là TOÀN TRÌNH
+//     theo yêu cầu nghiệp vụ: hồ sơ nộp trực tuyến trên Cổng Dịch vụ công quốc
+//     gia, không có bước bắt buộc hiện diện hoặc thẩm tra tại hiện trường.
+//     Trạng thái "Chờ công khai" của bản đăng ký vẫn giữ ở thongTinThem.
 //
 //     Cột: maDVC | tên dịch vụ công | phân loại | ghi chú
 // --------------------------------------------------------------------------
@@ -580,10 +580,10 @@ function buildThuTucLuatSuCong(row, soThuTu) {
     maTTHC,
     ten,
     linhVuc: LV.LUAT_SU,
-    mucDoDVC: MUC_DO.CHO_CONG_KHAI,
+    mucDoDVC: MUC_DO.TT,
     lyDoMotPhan: [],
     ghiChu,
-    trangThai: MUC_DO.CHO_CONG_KHAI,
+    trangThai: MUC_DO.TT,
     thoiGian: "",
     // Bản đăng ký ghi cấp thực hiện là "Bộ / Ngành", không phải mã số 1/2/3 của
     // tham số CapThucHien — để rỗng thay vì gán một mã cấp sai.

@@ -11,14 +11,12 @@
  * ------------------------------------------------------------------
  */
 
-// Tab "Dịch vụ công": mức độ DVC trực tuyến theo Phụ lục QĐ 2117/QĐ-BTP;
-// riêng "cho-cong-khai" là 5 DVC luật sư công mới ban hành theo QĐ 2296/QĐ-BTP,
-// chưa được phân loại mức độ và chưa công khai trên Hệ thống.
+// Tab "Dịch vụ công": mức độ DVC trực tuyến theo Phụ lục QĐ 2117/QĐ-BTP; 5 DVC
+// luật sư công theo QĐ 2296/QĐ-BTP được cấu hình toàn trình (xem data.js).
 const STATUS_LABEL_DVC = {
   "toan-trinh": "Toàn trình",
   "mot-phan": "Một phần",
   "khong-truc-tuyen": "Không trực tuyến",
-  "cho-cong-khai": "Chờ công khai",
 };
 
 // Tab "Tác nghiệp nội bộ": trạng thái triển khai của hệ thống (xem data.js).
