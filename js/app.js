@@ -7,15 +7,17 @@
  *   2. Làm được mọi việc bằng bàn phím: / tìm, ↑↓ chọn, Enter mở,
  *      Shift+Enter xem chi tiết, C sao chép mã, 1/2 đổi tab, Esc thoát.
  *   3. Một listener uỷ quyền cho cả danh sách thay vì gắn cho từng dòng,
- *      để render lại 255 thủ tục vẫn nhẹ.
+ *      để render lại 260 thủ tục vẫn nhẹ.
  * ------------------------------------------------------------------
  */
 
-// Tab "Dịch vụ công": mức độ DVC trực tuyến theo Phụ lục QĐ 2117/QĐ-BTP.
+// Tab "Dịch vụ công": mức độ DVC trực tuyến theo Phụ lục QĐ 2117/QĐ-BTP;
+// riêng "moi-ban-hanh" là TTHC mới ban hành theo QĐ 2296/QĐ-BTP, chưa phân loại.
 const STATUS_LABEL_DVC = {
   "toan-trinh": "Toàn trình",
   "mot-phan": "Một phần",
   "khong-truc-tuyen": "Không trực tuyến",
+  "moi-ban-hanh": "Mới ban hành",
 };
 
 // Tab "Tác nghiệp nội bộ": trạng thái triển khai của hệ thống (xem data.js).
@@ -410,12 +412,21 @@ function openDrawerDVC(item) {
   if (item.ghiChu) fields.push(["Ghi chú", item.ghiChu]);
   $("drawerMeta").innerHTML = metaHtml(fields);
 
-  $("drawerExtra").innerHTML = `
+  // Thủ tục chưa có mã TTHC quốc gia thì chưa dựng được link cổng DVC.
+  const agencies = item.coQuanThucHienList || [];
+  $("drawerExtra").innerHTML = agencies.length
+    ? `
     <div class="agency-section">
       <p class="agency-section__label">Dịch vụ công &rsaquo; ${escapeHtml(item.linhVuc)} &rsaquo; Chọn cơ quan thực hiện</p>
       <div class="agency-list">
-        ${item.coQuanThucHienList.map((agency) => renderAgencyRow(item, agency)).join("")}
+        ${agencies.map((agency) => renderAgencyRow(item, agency)).join("")}
       </div>
+    </div>
+  `
+    : `
+    <div class="agency-section">
+      <p class="agency-section__label">Dịch vụ công &rsaquo; ${escapeHtml(item.linhVuc)} &rsaquo; Cơ quan thực hiện</p>
+      <p class="agency-section__note">Thủ tục mới ban hành, chưa có mã TTHC quốc gia nên chưa dựng được liên kết tới cổng Dịch vụ công. Hồ sơ nộp trực tiếp hoặc qua dịch vụ bưu chính đến Bộ Tư pháp, hoặc trực tuyến trên Cổng Dịch vụ công quốc gia.</p>
     </div>
   `;
 }
@@ -620,7 +631,7 @@ function bindEvents() {
     render();
   });
 
-  // Một listener cho toàn bộ danh sách (255 dòng vẫn nhẹ).
+  // Một listener cho toàn bộ danh sách (260 dòng vẫn nhẹ).
   $("listContainer").addEventListener("click", (e) => {
     const copyBtn = e.target.closest("[data-copy]");
     if (copyBtn) { copyText(copyBtn.dataset.copy); return; }
